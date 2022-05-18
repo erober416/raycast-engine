@@ -1,0 +1,23 @@
+//
+// Created by eve on 5/14/22.
+//
+
+#ifndef UNTITLED_MAIN_H
+#define UNTITLED_MAIN_H
+
+#define PI 3.14159265
+#define MAP_WIDTH 16
+#define MAP_LENGTH 16
+#define SCREEN_WIDTH 960
+#define SCREEN_LENGTH 960
+#define TILE_WIDTH 32
+#define TILE_LENGTH 32
+#define SPEED_SCALE 5
+#define FOV 90
+#define FRAME_CAP 60.0
+
+extern int *g_map;
+
+#endif //UNTITLED_MAIN_H
+
+
