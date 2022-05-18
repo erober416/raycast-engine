@@ -7,41 +7,40 @@
 #include "Texture.h"
 #include "Player.h"
 #include "Main.h"
+#include "Map.h"
 
-int *g_map = NULL;
 bool g_mapmode = false;
-Texture *g_texture;
-Player  *g_player;
-uint32_t *g_texture_buffer;
 
-void init_map();
-void draw_map(SDL_Renderer **);
-void draw_player(SDL_Renderer **);
-void draw_rays(SDL_Renderer **);
+//void draw_map(SDL_Renderer **);
+//void draw_player(SDL_Renderer **);
+void draw_rays(Map *map, Player *player, Texture *texture, uint32_t **pixel_buffer);
 
 int main(int argc, char *argv[]) {
     if (SDL_Init(SDL_INIT_VIDEO) == 0) {
         SDL_Window *window = NULL;
         SDL_Renderer *renderer = NULL;
+        uint32_t *pixel_buffer = (uint32_t *) malloc(sizeof(uint32_t) * ((SCREEN_LENGTH * SCREEN_WIDTH) + 1));
 
         if (SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_LENGTH, 0, &window, &renderer) == 0) {
             SDL_bool done = SDL_FALSE;
             Uint32 ticks_at_last_update = SDL_GetTicks();
 
-            //This is the texture rendered on tiles
-            g_texture = new Texture("sample.bmp");
+            //This is the map we are using
+            Map *map = new Map("map1");
 
-            //Pixels are written to g_texture_buffer
+            //This is the texture rendered on tiles
+            Texture *texture = new Texture("sample.bmp");
+
+            //Create fullscreen texture that we can render all at once from pixel_buffer
             SDL_Texture *sdl_texture = SDL_CreateTexture( renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_LENGTH);
-            g_texture_buffer = (uint32_t *) malloc(sizeof(uint32_t) * ((SCREEN_LENGTH * SCREEN_WIDTH) + 1));
             SDL_Rect texture_rect;
             texture_rect.x = 0;
             texture_rect.y = 0;
             texture_rect.w = SCREEN_WIDTH;
             texture_rect.h = SCREEN_LENGTH;
 
-            g_player = new Player(32, 32, 0);
-            init_map();
+            //Player class structure
+            Player *player = new Player(32, 32, 0);
 
             while (!done) {
                 SDL_Event event;
@@ -55,7 +54,7 @@ int main(int argc, char *argv[]) {
                     uint32_t grey = 0xFF999999;
                     for (int i = 0; i < SCREEN_WIDTH; i++) {
                         for (int j = 0; j < SCREEN_LENGTH; j++) {
-                            g_texture_buffer[j*SCREEN_WIDTH + i] = (j > SCREEN_LENGTH >> 1) ? black : grey;
+                            pixel_buffer[j*SCREEN_WIDTH + i] = (j > SCREEN_LENGTH >> 1) ? black : grey;
                         }
                     }
 
@@ -68,16 +67,17 @@ int main(int argc, char *argv[]) {
                         SDL_SetRenderDrawColor(renderer, 0, 0, 255, SDL_ALPHA_OPAQUE);
                     }*/
 
-                    draw_rays(&renderer);
+                    draw_rays(map, player, texture, &pixel_buffer);
 
-                    SDL_UpdateTexture( sdl_texture , NULL, g_texture_buffer, SCREEN_WIDTH * sizeof (uint32_t));
+                    SDL_UpdateTexture( sdl_texture , NULL, pixel_buffer, SCREEN_WIDTH * sizeof (uint32_t));
 
                     SDL_RenderCopy(renderer, sdl_texture, NULL, &texture_rect);
                     SDL_RenderPresent(renderer);
 
-                    g_player->update();
+                    player->update(map);
                 }
 
+                //Hardware controls
                 while (SDL_PollEvent(&event)) {
                     switch(event.type) {
                         case SDL_QUIT:
@@ -86,16 +86,16 @@ int main(int argc, char *argv[]) {
                         case SDL_KEYUP:
                             switch(event.key.keysym.sym) {
                                 case SDLK_LEFT:
-                                    g_player->set_turning_left(false);
+                                    player->set_turning_left(false);
                                     break;
                                 case SDLK_RIGHT:
-                                    g_player->set_turning_right(false);
+                                    player->set_turning_right(false);
                                     break;
                                 case SDLK_UP:
-                                    g_player->set_moving_forward(false);
+                                    player->set_moving_forward(false);
                                     break;
                                 case SDLK_DOWN:
-                                    g_player->set_moving_backward(false);
+                                    player->set_moving_backward(false);
                                     break;
                                 case SDLK_TAB:
                                     g_mapmode = false;
@@ -107,16 +107,16 @@ int main(int argc, char *argv[]) {
                         case SDL_KEYDOWN:
                             switch(event.key.keysym.sym) {
                                 case SDLK_LEFT:
-                                    g_player->set_turning_left(true);
+                                    player->set_turning_left(true);
                                     break;
                                 case SDLK_RIGHT:
-                                    g_player->set_turning_right(true);
+                                    player->set_turning_right(true);
                                     break;
                                 case SDLK_UP:
-                                    g_player->set_moving_forward(true);
+                                    player->set_moving_forward(true);
                                     break;
                                 case SDLK_DOWN:
-                                    g_player->set_moving_backward(true);
+                                    player->set_moving_backward(true);
                                     break;
                                 case SDLK_TAB:
                                     g_mapmode = true;
@@ -136,39 +136,12 @@ int main(int argc, char *argv[]) {
         if (window) {
             SDL_DestroyWindow(window);
         }
-    }
-    free(g_texture_buffer);
-    free(g_map);
-    SDL_Quit();
-    return 0;
-}
-
-void init_map() {
-    g_map = (int *) malloc((sizeof(int) * MAP_LENGTH * MAP_WIDTH) + 1);
-    int map[16][16] = {
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0},
-            {1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0},
-            {1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0},
-            {1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0},
-            {1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0},
-            {1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0},
-            {1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0},
-            {1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0},
-            {1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0},
-            {1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0},
-            {1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0},
-            {1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0},
-            {1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0},
-            {1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0},
-            {1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0}
-    };
-
-    for (int i = 0; i < MAP_WIDTH; i++) {
-        for (int j = 0; j < MAP_LENGTH; j++) {
-            *(g_map + (i * MAP_WIDTH) + j) = map[i][j];
+        if (pixel_buffer) {
+            free(pixel_buffer);
         }
     }
+    SDL_Quit();
+    return 0;
 }
 
 //TODO rewrite
@@ -199,10 +172,10 @@ void init_map() {
     }
 }*/
 
-void draw_rays(SDL_Renderer **renderer) {
-    double x_loc = g_player->get_x_loc();
-    double y_loc = g_player->get_y_loc();
-    double angle = g_player->get_angle();
+void draw_rays(Map *map, Player *player, Texture *texture, uint32_t **pixel_buffer) {
+    double x_loc = player->get_x_loc();
+    double y_loc = player->get_y_loc();
+    double angle = player->get_angle();
 
     double step = (double) FOV / (double) SCREEN_WIDTH;
 
@@ -264,7 +237,7 @@ void draw_rays(SDL_Renderer **renderer) {
         for (;xt < t_min; xt = t + (count * xstep)) {
             xcoord = floor((x_loc + (xt + .001) * x_factor) / TILE_WIDTH);
             ycoord = floor((y_loc + (xt + .001) * y_factor) / TILE_LENGTH);
-            if (*(g_map + (ycoord * MAP_WIDTH) + xcoord) == 1) {
+            if (map->get_tile(ycoord, xcoord) == 1) {
                 break;
             }
             count++;
@@ -275,7 +248,7 @@ void draw_rays(SDL_Renderer **renderer) {
         for (;yt < t_min; yt = t + (count * ystep)) {
             xcoord = floor((x_loc + (yt + .001) * x_factor) / TILE_WIDTH);
             ycoord = floor((y_loc + (yt + .001) * y_factor) / TILE_LENGTH);
-            if (*(g_map + (ycoord * MAP_WIDTH) + xcoord) == 1) {
+            if (map->get_tile(ycoord, xcoord) == 1) {
                 break;
             }
             count++;
@@ -316,8 +289,8 @@ void draw_rays(SDL_Renderer **renderer) {
             int scale_factor = SCREEN_LENGTH * 8;
             double len = 2 * (scale_factor / fisheye_correction_factor);
 
-            int w = g_texture->get_width();
-            int l = g_texture->get_length();
+            int w = texture->get_width();
+            int l = texture->get_length();
 
             int top = 1 + floor((SCREEN_LENGTH - len) / 2);
             int bottom = floor((SCREEN_LENGTH + len) / 2);
@@ -328,11 +301,11 @@ void draw_rays(SDL_Renderer **renderer) {
 
             for (;y < max; y++) {
                 double texture_length_point = (y - top) / len;
-                uint8_t *color = g_texture->get_pixel(floor(texture_width_point * w), floor(texture_length_point * l));
+                uint8_t *color = texture->get_pixel(floor(texture_width_point * w), floor(texture_length_point * l));
                 uint8_t red = *(color + 2) >> lighting_constant;
                 uint8_t green = *(color + 1) >> lighting_constant;
                 uint8_t blue = *(color) >> lighting_constant;
-                g_texture_buffer[y*SCREEN_WIDTH + x] = 0xFF000000 | (red << 16) | (blue << 8) | green;
+                (*pixel_buffer)[y*SCREEN_WIDTH + x] = 0xFF000000 | (red << 16) | (blue << 8) | green;
             }
         }
         x++;

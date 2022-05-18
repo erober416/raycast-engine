@@ -6,6 +6,7 @@
 
 #include "Texture.h"
 
+//Creates texture data from bmp file
 Texture::Texture(char *filename) {
     // Open file pointer
     FILE *fp;

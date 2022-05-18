@@ -3,7 +3,6 @@
 //
 
 #include "Player.h"
-#include "Main.h"
 
 #include <math.h>
 
@@ -67,7 +66,7 @@ bool Player::get_moving_backward() {
     return Player::moving_backward;
 }
 
-void Player::update() {
+void Player::update(Map *map) {
     if (turning_left) {
         angle -= SPEED_SCALE;
     }
@@ -95,11 +94,11 @@ void Player::update() {
             y_factor = 0;
         }
 
-        if (x_coord != new_x_coord && (*(g_map + (y_coord * MAP_WIDTH) + new_x_coord) == 1)) {
+        if (x_coord != new_x_coord && map->get_tile(y_coord, new_x_coord) == 1) {
             x_factor = 0;
         }
 
-        if (y_coord != new_y_coord && (*(g_map + (new_y_coord * MAP_WIDTH) + x_coord) == 1)) {
+        if (y_coord != new_y_coord && map->get_tile(new_y_coord, x_coord) == 1) {
             y_factor = 0;
         }
 

@@ -1,6 +1,7 @@
 //
 // Created by eve on 5/14/22.
 //
+#include "Map.h"
 
 #ifndef UNTITLED_MAIN_H
 #define UNTITLED_MAIN_H
@@ -15,8 +16,6 @@
 #define SPEED_SCALE 5
 #define FOV 90
 #define FRAME_CAP 60.0
-
-extern int *g_map;
 
 #endif //UNTITLED_MAIN_H
 

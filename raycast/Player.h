@@ -5,6 +5,9 @@
 #ifndef UNTITLED_PLAYER_H
 #define UNTITLED_PLAYER_H
 
+#include "Map.h"
+#include "Main.h"
+
 class Player {
     private:
         double x_loc;
@@ -19,7 +22,7 @@ class Player {
     public:
         Player(double x_loc, double y_loc, int angle);
 
-        void update();
+        void update(Map *map);
 
         double get_x_loc();
         double get_y_loc();
