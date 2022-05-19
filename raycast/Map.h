@@ -11,10 +11,16 @@ class Map {
         int *tiles;
         int width;
         int height;
+        int player_start_x;
+        int player_start_y;
 
     public:
         Map(char *filename);
         int get_tile(int height, int width);
+        int get_width();
+        int get_height();
+        int get_player_start_x();
+        int get_player_start_y();
 
 };
 

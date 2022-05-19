@@ -20,7 +20,7 @@ class Player {
         bool moving_backward;
 
     public:
-        Player(double x_loc, double y_loc, int angle);
+        Player(int x_coord, int y_coord);
 
         void update(Map *map);
 

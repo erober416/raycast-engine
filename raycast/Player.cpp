@@ -5,10 +5,12 @@
 #include "Player.h"
 
 #include <math.h>
+#include <iostream>
 
-Player::Player(double x_loc, double y_loc, int angle) {
-    set_loc(x_loc, y_loc);
-    set_angle(angle);
+Player::Player(int x_coord, int y_coord) {
+    x_loc = (x_coord * TILE_WIDTH) + (TILE_WIDTH >> 1);
+    y_loc = (y_coord * TILE_LENGTH) + (TILE_LENGTH >> 1);
+    angle = 0;
     turning_left = false;
     turning_right = false;
 }
@@ -68,37 +70,33 @@ bool Player::get_moving_backward() {
 
 void Player::update(Map *map) {
     if (turning_left) {
-        angle -= SPEED_SCALE;
+        angle += SPEED_SCALE;
     }
     if (turning_right) {
-        angle += SPEED_SCALE;
+        angle -= SPEED_SCALE;
     }
     if (moving_forward || moving_backward) {
         int dir = moving_backward ? -1 : 1;
 
         double x_factor = dir * SPEED_SCALE * cos(angle * PI / 180.0);
-        double y_factor = dir * SPEED_SCALE * sin(angle * PI / 180.0);
+        double y_factor = -dir * SPEED_SCALE * sin(angle * PI / 180.0);
 
         //Calculate new and old coordinates for collision detection
-        int x_coord = x_loc / TILE_WIDTH;
-        int y_coord = y_loc / TILE_LENGTH;
+        int x_coord = floor(x_loc / TILE_WIDTH);
+        int y_coord = floor(y_loc / TILE_LENGTH);
 
-        int new_x_coord = (x_loc + x_factor) / TILE_WIDTH;
-        int new_y_coord = (y_loc + y_factor) / TILE_LENGTH;
+        int new_x_coord = floor((x_loc + x_factor) / TILE_WIDTH);
+        int new_y_coord = floor((y_loc + y_factor) / TILE_LENGTH);
 
-        if (new_x_coord < 0 || new_x_coord >= MAP_WIDTH || (x_loc + x_factor) < 0) {
+        if (new_x_coord < 0 || new_x_coord >= map->get_width() || (x_loc + x_factor) < 0) {
+            x_factor = 0;
+        } else if (x_coord != new_x_coord && map->get_tile(y_coord, new_x_coord) == 1) {
             x_factor = 0;
         }
 
-        if (new_y_coord < 0 || new_y_coord >= MAP_LENGTH || (y_loc + y_factor) < 0) {
+        if (new_y_coord < 0 || new_y_coord >= map->get_height() || (y_loc + y_factor) < 0) {
             y_factor = 0;
-        }
-
-        if (x_coord != new_x_coord && map->get_tile(y_coord, new_x_coord) == 1) {
-            x_factor = 0;
-        }
-
-        if (y_coord != new_y_coord && map->get_tile(new_y_coord, x_coord) == 1) {
+        } else if (y_coord != new_y_coord && map->get_tile(new_y_coord, x_coord) == 1) {
             y_factor = 0;
         }
 

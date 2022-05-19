@@ -7,8 +7,6 @@
 #define UNTITLED_MAIN_H
 
 #define PI 3.14159265
-#define MAP_WIDTH 16
-#define MAP_LENGTH 16
 #define SCREEN_WIDTH 960
 #define SCREEN_LENGTH 960
 #define TILE_WIDTH 32

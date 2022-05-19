@@ -21,9 +21,20 @@ Map::Map(char *filename) {
     assert(tiles != NULL);
 
     //Store map data
+    char c;
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            fscanf(fp, "%d", tiles + (i * height) + j);
+            fscanf(fp, "%c", &c);
+            switch(c) {
+                case 'P':
+                    player_start_x = j;
+                    player_start_y = i;
+                    *(tiles + (i * height) + j) = 0;
+                    break;
+                default:
+                    *(tiles + (i * height) + j) = c - '0';
+                    break;
+            }
             fseek(fp, 1, SEEK_CUR);
         }
     }
@@ -32,9 +43,25 @@ Map::Map(char *filename) {
 }
 
 int Map::get_tile(int h, int w) {
-    assert(h < height);
-    assert(w < width);
+    assert(h <= height);
+    assert(w <= width);
     assert(h >= 0);
     assert(w >= 0);
     return *(tiles + (height * h) + w);
+}
+
+int Map::get_width() {
+    return width;
+}
+
+int Map::get_height() {
+    return height;
+}
+
+int Map::get_player_start_x() {
+    return player_start_x;
+}
+
+int Map::get_player_start_y() {
+    return player_start_y;
 }
