@@ -12,6 +12,7 @@
 #define TILE_WIDTH 32
 #define TILE_LENGTH 32
 #define SPEED_SCALE 5
+#define ANGLE_SPEED_SCALE 5
 #define FOV 90
 #define FRAME_CAP 60.0
 

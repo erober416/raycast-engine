@@ -70,10 +70,10 @@ bool Player::get_moving_backward() {
 
 void Player::update(Map *map) {
     if (turning_left) {
-        angle += SPEED_SCALE;
+        angle += ANGLE_SPEED_SCALE;
     }
     if (turning_right) {
-        angle -= SPEED_SCALE;
+        angle -= ANGLE_SPEED_SCALE;
     }
     if (moving_forward || moving_backward) {
         int dir = moving_backward ? -1 : 1;

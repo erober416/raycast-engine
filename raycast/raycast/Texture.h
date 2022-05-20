@@ -14,6 +14,7 @@ class Texture {
         uint32_t width;
         uint32_t length;
         uint8_t *colors;
+        uint8_t *end;
 
     public:
         Texture(char *filename);
