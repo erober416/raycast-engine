@@ -51,3 +51,12 @@ The first line first specifies the length and width of the map. The rest of the 
 * <kbd>0</kbd>: Empty space
 * <kbd>1</kbd>-<kbd>9</kbd>: Wall. The value of the digit specifies the texture to be mapped to this wall tile
 * <kbd>P</kbd>: Default location of camera
+# Texture specification
+The default texture specification file location is build/textures. Below is an example of this kind of file.
+```
+3
+sample.bmp
+snail.bmp
+money.bmp
+```
+The first line specifies the number of textures available (1-9). The rest of the file specifies the relative path of these texture files. This project **only** supports bitmap files without alpha channel.
