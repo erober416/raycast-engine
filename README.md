@@ -22,3 +22,5 @@ $ make
 # Step 4: Launching executable file
 $ ./untitled
 ```
+# Controls
+Use <kbd>→</kbd> to turn clockwise
