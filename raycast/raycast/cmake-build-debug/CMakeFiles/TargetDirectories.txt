@@ -1,3 +1,0 @@
-/home/eve/CLionProjects/raycast/cmake-build-debug/CMakeFiles/untitled.dir
-/home/eve/CLionProjects/raycast/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/eve/CLionProjects/raycast/cmake-build-debug/CMakeFiles/rebuild_cache.dir
