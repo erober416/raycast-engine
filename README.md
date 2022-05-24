@@ -7,8 +7,18 @@ This is an example of how to build using **Linux**. This software requires SDL2 
 ```shell
 # Step 1: Get sources from GitHub
 $ git clone https://github.com/erober416/raycast-engine.git
-$ cd raycast-engine
+$ cd raycast-engine/raycast
 ```
 ```shell
 # Step 2: Create makefile by calling cmake
+$ cmake -H. -Bbuild
+```
+```shell
+# Step 3: Compile sources using makefile
+$ cd build
+$ make
+```
+```shell
+# Step 4: Launching executable file
+$ ./untitled
 ```
