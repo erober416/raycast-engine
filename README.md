@@ -59,4 +59,4 @@ sample.bmp
 snail.bmp
 money.bmp
 ```
-The first line specifies the number of textures available (1-9). The rest of the file specifies the relative path of these texture files. This project **only** supports bitmap files without alpha channel.
+The first line specifies the number of textures available (1-9). The rest of the file specifies the relative path of these texture files. The first of these lines is also the texture used for floor and ceiling casting. This project **only** supports bitmap files without alpha channel.
