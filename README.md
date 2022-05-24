@@ -23,8 +23,8 @@ $ make
 $ ./untitled
 ```
 # Controls
-Use <kbd>→</kbd> to turn clockwise
-Use <kbd>←</kbd> to turn counter-clockwise
-Use <kbd>↑</kbd> to move forwards along line of sight
-Use <kbd>↓</kbd> to move backwards along line of sight
+Use <kbd>→</kbd> to turn clockwise<br>
+Use <kbd>←</kbd> to turn counter-clockwise<br>
+Use <kbd>↑</kbd> to move forwards along line of sight<br>
+Use <kbd>↓</kbd> to move backwards along line of sight<br>
 Hold <kbd>tab</kbd> to view minimap
