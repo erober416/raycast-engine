@@ -14,9 +14,11 @@ class Texture {
         uint32_t width;
         uint32_t length;
         uint8_t *colors;
+        uint8_t *end;
 
     public:
         Texture(char *filename);
+        ~Texture();
         uint8_t *get_pixel(int x, int y);
         int get_width();
         int get_length();

@@ -70,10 +70,10 @@ bool Player::get_moving_backward() {
 
 void Player::update(Map *map) {
     if (turning_left) {
-        angle += SPEED_SCALE;
+        angle += ANGLE_SPEED_SCALE;
     }
     if (turning_right) {
-        angle -= SPEED_SCALE;
+        angle -= ANGLE_SPEED_SCALE;
     }
     if (moving_forward || moving_backward) {
         int dir = moving_backward ? -1 : 1;
@@ -90,13 +90,21 @@ void Player::update(Map *map) {
 
         if (new_x_coord < 0 || new_x_coord >= map->get_width() || (x_loc + x_factor) < 0) {
             x_factor = 0;
-        } else if (x_coord != new_x_coord && map->get_tile(y_coord, new_x_coord) == 1) {
+        } else if (x_coord != new_x_coord && map->get_tile(y_coord, new_x_coord)) {
             x_factor = 0;
         }
 
         if (new_y_coord < 0 || new_y_coord >= map->get_height() || (y_loc + y_factor) < 0) {
             y_factor = 0;
-        } else if (y_coord != new_y_coord && map->get_tile(new_y_coord, x_coord) == 1) {
+        } else if (y_coord != new_y_coord && map->get_tile(new_y_coord, x_coord)) {
+            y_factor = 0;
+        }
+
+        new_x_coord = floor((x_loc + x_factor) / TILE_WIDTH);
+        new_y_coord = floor((y_loc + y_factor) / TILE_LENGTH);
+
+        if (y_coord != new_y_coord && x_coord != new_x_coord && new_y_coord >= 0 && new_x_coord >= 0 &&
+        map->get_tile(new_y_coord, new_x_coord)) {
             y_factor = 0;
         }
 

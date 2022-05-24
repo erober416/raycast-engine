@@ -16,6 +16,7 @@ class Map {
 
     public:
         Map(char *filename);
+        ~Map();
         int get_tile(int height, int width);
         int get_width();
         int get_height();

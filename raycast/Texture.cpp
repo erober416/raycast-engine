@@ -28,6 +28,7 @@ Texture::Texture(char *filename) {
 
     //Move to offset and start read colors
     colors = (uint8_t *) malloc(size - offset + 1);
+    end = colors + (3 * width * length);
     fseek(fp, offset, SEEK_SET);
     for (int i = 0; i < size - offset; i++) {
         fread(colors + i, sizeof(uint8_t), 1, fp);
@@ -36,10 +37,14 @@ Texture::Texture(char *filename) {
     fclose(fp);
 }
 
+Texture::~Texture() {
+    free(colors);
+}
+
 uint8_t *Texture::get_pixel(int x, int y) {
     if (x >= width) { x = width - 1; }
     if (y >= width) { y = length - 1; }
-    return colors + (3 * ((y * width) + x));
+    return end - (3 * ((y * width) + x));
 }
 
 int Texture::get_length() {

@@ -5,6 +5,9 @@
 #ifndef UNTITLED_PLAYER_H
 #define UNTITLED_PLAYER_H
 
+#define SPEED_SCALE 5
+#define ANGLE_SPEED_SCALE 5
+
 #include "Map.h"
 #include "Main.h"
 

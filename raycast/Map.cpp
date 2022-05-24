@@ -29,10 +29,10 @@ Map::Map(char *filename) {
                 case 'P':
                     player_start_x = j;
                     player_start_y = i;
-                    *(tiles + (i * height) + j) = 0;
+                    *(tiles + (i * width) + j) = 0;
                     break;
                 default:
-                    *(tiles + (i * height) + j) = c - '0';
+                    *(tiles + (i * width) + j) = c - '0';
                     break;
             }
             fseek(fp, 1, SEEK_CUR);
@@ -42,12 +42,16 @@ Map::Map(char *filename) {
     fclose(fp);
 }
 
+Map::~Map() {
+    free(tiles);
+}
+
 int Map::get_tile(int h, int w) {
     assert(h <= height);
     assert(w <= width);
     assert(h >= 0);
     assert(w >= 0);
-    return *(tiles + (height * h) + w);
+    return *(tiles + (width * h) + w);
 }
 
 int Map::get_width() {
