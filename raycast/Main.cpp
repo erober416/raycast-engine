@@ -353,7 +353,7 @@ void draw_rays(Map *map, Player *player, Texture **texture_array, bool minimap_m
         double inverse_fisheye = 1.0 / fisheye_correction_factor;
         double tw_recip = 1.0 / TILE_WIDTH;
         double tl_recip = 1.0 / TILE_LENGTH;
-        texture = *(texture_array + 1);
+        texture = *(texture_array);
         w = texture->get_width();
         l = texture->get_length();
         double dxfish = inverse_fisheye * dx;
