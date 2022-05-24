@@ -33,7 +33,7 @@ The default map file location is build/map1. Below is an example of a possible m
 ```
 8 8
 1 2 1 2 1 2 1 2
-2 0 0 0 0 0 0 1
+2 P 0 0 0 0 0 1
 1 0 0 0 0 0 0 2
 2 0 0 0 0 0 0 1
 1 0 0 0 0 0 0 2
