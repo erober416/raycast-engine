@@ -24,3 +24,7 @@ $ ./untitled
 ```
 # Controls
 Use <kbd>→</kbd> to turn clockwise
+Use <kbd>←</kbd> to turn counter-clockwise
+Use <kbd>↑</kbd> to move forwards along line of sight
+Use <kbd>↓</kbd> to move backwards along line of sight
+Hold <kbd>tab</kbd> to view minimap
